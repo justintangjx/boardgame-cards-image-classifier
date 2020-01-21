@@ -1,15 +1,26 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  // ScrollView,
+  FlatList
+} from "react-native";
 
 export default function App() {
-  const [newCardInput, toAdd] = useState('');
+  const [newCardInput, toAdd] = useState("");
   const cardInputHandler = enteredText => {
     toAdd(enteredText);
   };
 
   const [cards, addCardToList] = useState([]);
   const addCardHandler = () => {
-    addCardToList(cards => [...cards, newCardInput])
+    addCardToList(cards => [
+      ...cards,
+      { id: Math.random().toString(), value: newCardInput }
+    ]);
   };
   return (
     <View style={{ padding: 50 }}>
@@ -28,9 +39,15 @@ export default function App() {
         />
         <Button title="ADD" onPress={addCardHandler} />
       </View>
-      <View>
-      {cards.map((card) => <View key={card} style={styles.listItem}>  <Text> {card} </Text> </View>)}
-      </View>
+      <FlatList
+        keyExtractor={(card, index) => card.id}
+        data={cards}
+        renderItem={cardItemData => (
+          <View>
+            <Text>{cardItemData.item.value}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -51,8 +68,8 @@ const styles = StyleSheet.create({
   listItem: {
     padding: 10,
     marginVertical: 5,
-    backgroundColor: '#ccc',
-    borderColor: 'black',
+    backgroundColor: "#ccc",
+    borderColor: "black",
     borderWidth: 1
   }
 });
